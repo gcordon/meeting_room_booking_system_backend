@@ -13,6 +13,9 @@ async function bootstrap() {
   // 创建 NestJS 应用实例
   const app = await NestFactory.create(AppModule);
 
+  // cors 跨域问题
+  app.enableCors()
+
   // 使用全局管道进行数据验证
   app.useGlobalPipes(new ValidationPipe()) // 全局使用验证管道
   // 使用全局拦截器处理响应格式

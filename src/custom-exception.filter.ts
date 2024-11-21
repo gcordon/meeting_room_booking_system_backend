@@ -24,8 +24,14 @@ export class CustomExceptionFilter implements ExceptionFilter {
     // 从异常对象中获取错误响应信息
     const exceptionResponse = exception.getResponse()
     
-    // 处理错误信息格式,支持字符串数组格式
-    let data = (exceptionResponse as { message: string[] }).message.join && (exceptionResponse as { message: string[] }).message.join(',') || exception.message
+    // 处理错误信息格式
+    let data: string;
+    if (typeof exceptionResponse === 'object' && 'message' in exceptionResponse) {
+      const message = exceptionResponse.message;
+      data = Array.isArray(message) ? message.join(',') : String(message);
+    } else {
+      data = exception.message;
+    }
 
     // 返回统一的错误响应格式:
     // - code: HTTP状态码 
