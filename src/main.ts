@@ -8,11 +8,20 @@ import { InvokeRecordInterceptor } from './invoke-record.interceptor';
 import { UnloginFilter } from './unlogin.filter';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  // 创建 NestJS 应用实例
-  const app = await NestFactory.create(AppModule);
+  // api 文档
+  // http://localhost:3005/api-doc#/
 
+  // 创建 NestJS 应用实例
+  const app = await NestFactory.create<NestExpressApplication>(AppModule); // 使用 express 作为应用平台
+
+  // 使用中间件处理静态文件
+  app.useStaticAssets('uploads', {
+    prefix: '/uploads', // 设置静态文件的访问路径
+  })
+  
   // cors 跨域问题
   app.enableCors()
 

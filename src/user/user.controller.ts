@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, DefaultValuePipe, Get, HttpStatus, Inject, ParseIntPipe, Post, Query, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, DefaultValuePipe, Get, HttpStatus, Inject, ParseIntPipe, Post, Query, UnauthorizedException, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/user.dto';
 import { EmailService } from 'src/email/email.service';
@@ -12,10 +12,13 @@ import { UserDetailVo } from './vo/user-info.vo';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update.dto';
 import { generateParseIntPipe } from 'src/utils';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags, ApiConsumes } from '@nestjs/swagger';
 import { RefreshTokenVo } from './vo/refresh-token.vo';
 import { UserListVo } from './vo/user-list.vo';
 import { UserEntity } from 'src/entities/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as path from 'path';
+import { storage } from 'src/my-file-storage';
 
 @ApiTags('用户管理模块')
 @Controller('user')
@@ -36,9 +39,56 @@ export class UserController {
 
   @Get('init-data')
   async initData() {
-    // http://localhost:3030/user/init-data
+    // http://localhost:3005/user/init-data
     await this.userService.initData();
     return 'done'
+  }
+
+  @ApiBody({
+    description: '上传文件',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: '要上传的图片文件(支持 .png/.jpg/.gif)',
+        },
+      },
+    },
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: '文件上传成功，返回文件路径',
+    type: String,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: '只能上传图片文件',
+    type: String,
+  })
+  // 
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file', {
+    dest: 'uploads',// 使用默认的存储引擎
+    storage: storage, // 使用自定义的存储引擎
+    limits: {// 限制文件大小
+      fileSize: 1024 * 1024 * 10, // 10MB
+    },
+    fileFilter(req, file, callback) {
+      const extname = path.extname(file.originalname);        
+      // callback 的第一个参数是 error，第二个参数是是否接收文件。
+      if(['.png', '.jpg', '.jpeg', '.gif'].includes(extname)) {
+        callback(null, true);
+      } else {
+        callback(new BadRequestException('只能上传图片'), false);
+      }
+    }
+  }))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log('file', file);
+    return file.path;
   }
   
 
@@ -72,7 +122,7 @@ export class UserController {
   })
   @Get('register-captcha')
   async registerCaptcha(@Query('address') address: string) {
-    // http://localhost:3030/user/register-captcha?address=87788877@qq.com
+    // http://localhost:3005/user/register-captcha?address=87788877@qq.com
     const code = Math.random().toString().slice(2,8);
 
     await this.redisService.set(`captcha_${address}`, code, 60 * 5)
@@ -102,7 +152,7 @@ export class UserController {
   // @RequireLogin()
   @Get('update_password/captcha')
   async updatePasswordCaptcha(@Query('address') address: string) {
-    // http://localhost:3030/user/update_password/captcha?address=yy@yy.com
+    // http://localhost:3005/user/update_password/captcha?address=yy@yy.com
     const code = Math.random().toString().slice(2,8);
 
     await this.redisService.set(`update_password_captcha_${address}`, code, 10 * 60);
@@ -112,7 +162,7 @@ export class UserController {
       subject: '更改密码验证码',
       html: `<p>你的更改密码验证码是 ${code}</p>`
     });
-    return '发送成功';
+    return '发送成功 '+code;
   }
 
   @ApiBearerAuth()
@@ -123,7 +173,7 @@ export class UserController {
   @RequireLogin()
   @Get('update/captcha')
   async updateCaptcha(@UserInfo('email') address: string, @UserInfo() user: UserEntity) {
-      // http://localhost:3030/user/update/captcha?address=yy@yy.com
+      // http://localhost:3005/user/update/captcha?address=yy@yy.com
       const code = Math.random().toString().slice(2,8);
 
       await this.redisService.set(`update_user_captcha_${address}`, code, 10 * 60);
@@ -240,7 +290,7 @@ export class UserController {
 
   @Get('admin/refresh')
   async adminRefresh(@Query('refreshToken') refreshToken: string,) {
-    // http://localhost:3030/user/refresh?refreshToken=
+    // http://localhost:3005/user/refresh?refreshToken=
     let e = await this.publicRefresh(refreshToken, true)
     return e
   }
@@ -384,8 +434,8 @@ export class UserController {
     @Query('nickName') nickName: string,
     @Query('email') email: string,
   ) {
-    // http://localhost:3030/user/list?username=zhangsan&nickName&email&pageNo=1&pageSize=2
-    // http://localhost:3030/user/list?username=zhangsan&nickName=张三&email=xxx@xx.com&pageNo=1&pageSize=2
+    // http://localhost:3005/user/list?username=zhangsan&nickName&email&pageNo=1&pageSize=2
+    // http://localhost:3005/user/list?username=zhangsan&nickName=张三&email=xxx@xx.com&pageNo=1&pageSize=2
     return await this.userService.findUsers(username, nickName, email,pageNo, pageSize, )
   }
 }

@@ -17,7 +17,7 @@ export class AppController {
   @RequireLogin()
   @RequirePermission('ddd')
   aa(@UserInfo('username') username: string, @UserInfo() userInfo): object {
-    // http://localhost:3030/aa
+    // http://localhost:3005/aa
     let r1 = {
       username,
       userInfo,
@@ -29,13 +29,13 @@ export class AppController {
   @SetMetadata('require-login', true)
   @SetMetadata('require-permission', ['ddd'],)
   bb(): string {
-    // http://localhost:3030/bb
+    // http://localhost:3005/bb
     return 'bb'
   }
 
   @Get('cc')
   cc(): string {
-    // http://localhost:3030/cc
+    // http://localhost:3005/cc
     return 'cc'
   }
 }

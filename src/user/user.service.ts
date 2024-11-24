@@ -265,7 +265,7 @@ export class UserService {
   }
 
   async freezeUserById(userId: number) {
-    // http://localhost:3030/user/freeze?id=2
+    // http://localhost:3005/user/freeze?id=2
     const foundUser = await this.userRepository.findOneBy({ 
       id: userId 
     });
