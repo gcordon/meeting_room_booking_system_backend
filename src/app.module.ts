@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { RoleEntity } from './entities/role.entity';
 import { PermissionEntity } from './entities/permission.entity';
+import { MeetingRoomEntity } from './meeting-room/entities/meeting-room.entity';
 import { UserModule } from './user/user.module';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
@@ -13,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { LoginGuard } from './login.guard';
 import { PermissionGuard } from './permission.guard';
+import { MeetingRoomModule } from './meeting-room/meeting-room.module';
 
 /**
  * 应用程序的主模块
@@ -46,9 +48,10 @@ import { PermissionGuard } from './permission.guard';
           synchronize: true, // 自动同步实体
           logging: true, // 启用日志记录
           entities: [ // 实体列表
-            UserEntity,
-            RoleEntity,
-            PermissionEntity,
+            UserEntity, // 用户实体
+            RoleEntity, // 角色实体
+            PermissionEntity, // 权限实体
+            MeetingRoomEntity, // 会议室实体
           ], // 实体列表（当前为空）
           poolSize: 10, // 连接池大小
           connectorPackage: 'mysql2', // 使用的MySQL连接器包
@@ -70,6 +73,8 @@ import { PermissionGuard } from './permission.guard';
     RedisModule,
     // 邮件模块
     EmailModule,
+    // 会议室模块
+    MeetingRoomModule,
   ],
   controllers: [AppController], // 控制器
   providers: [

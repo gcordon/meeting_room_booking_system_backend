@@ -212,7 +212,18 @@ export class UserController {
   }
 
 
-  @ApiBody({type: LoginUserDto,})
+  @ApiBody({
+    type: LoginUserDto,
+    description: '用户登录信息',
+    examples: {
+      example1: {
+        value: {
+          username: 'lin',
+          password: 'linlin'
+        }
+      }
+    }
+  })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: '用户不存在/密码错误',
@@ -233,7 +244,18 @@ export class UserController {
     return vo
   }
 
-  @ApiBody({type: LoginUserDto,})
+  @ApiBody({
+    type: LoginUserDto,
+    description: 'admin用户登录信息',
+    examples: {
+      example1: {
+        value: {
+          username: 'zhangsan',
+          password: '111111'
+        }
+      }
+    }
+  })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: '用户不存在/密码错误',
