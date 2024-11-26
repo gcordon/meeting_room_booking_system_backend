@@ -15,6 +15,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { LoginGuard } from './login.guard';
 import { PermissionGuard } from './permission.guard';
 import { MeetingRoomModule } from './meeting-room/meeting-room.module';
+import { BookingModule } from './booking/booking.module';
+import { BookingEntity } from './booking/entities/booking.entity';
 
 /**
  * 应用程序的主模块
@@ -52,6 +54,7 @@ import { MeetingRoomModule } from './meeting-room/meeting-room.module';
             RoleEntity, // 角色实体
             PermissionEntity, // 权限实体
             MeetingRoomEntity, // 会议室实体
+            BookingEntity,
           ], // 实体列表（当前为空）
           poolSize: 10, // 连接池大小
           connectorPackage: 'mysql2', // 使用的MySQL连接器包
@@ -75,17 +78,19 @@ import { MeetingRoomModule } from './meeting-room/meeting-room.module';
     EmailModule,
     // 会议室模块
     MeetingRoomModule,
+    // 预约模块
+    BookingModule,
   ],
   controllers: [AppController], // 控制器
   providers: [
     AppService,
     {
       provide: APP_GUARD, // 提供全局守卫
-      useClass: LoginGuard,
+      useClass: LoginGuard, // 使用登录守卫
     },
     {
       provide: APP_GUARD, // 提供全局守卫
-      useClass: PermissionGuard,
+      useClass: PermissionGuard, // 使用权限守卫
     },
   ], // 服务提供者
 })
