@@ -17,6 +17,8 @@ import { PermissionGuard } from './permission.guard';
 import { MeetingRoomModule } from './meeting-room/meeting-room.module';
 import { BookingModule } from './booking/booking.module';
 import { BookingEntity } from './booking/entities/booking.entity';
+import { StatisticModule } from './statistic/statistic.module';
+import * as path from 'path';
 
 /**
  * 应用程序的主模块
@@ -58,9 +60,9 @@ import { BookingEntity } from './booking/entities/booking.entity';
           ], // 实体列表（当前为空）
           poolSize: 10, // 连接池大小
           connectorPackage: 'mysql2', // 使用的MySQL连接器包
-          extra: {
-            authPlugin: 'sha256_password', // 身份验证插件
-          },
+          // extra: {
+          //   authPlugin: 'sha256_password', // 身份验证插件
+          // },
         }
       },
       inject: [ConfigService],
@@ -68,7 +70,8 @@ import { BookingEntity } from './booking/entities/booking.entity';
     // 全局 env 环境变量
     ConfigModule.forRoot({ // https://docs.nestjs.com/techniques/configuration
       isGlobal: true, // 全局环境变量
-      envFilePath: 'src/.env', // 环境变量文件路径
+      // envFilePath: 'src/.env', // 环境变量文件路径
+      envFilePath: path.join(__dirname, '.env'), // 因为 build 出来的代码没有 src 目录，是直接放在 dist 下的
     }),
     // 用户模块
     UserModule,
@@ -80,6 +83,7 @@ import { BookingEntity } from './booking/entities/booking.entity';
     MeetingRoomModule,
     // 预约模块
     BookingModule,
+    StatisticModule,
   ],
   controllers: [AppController], // 控制器
   providers: [

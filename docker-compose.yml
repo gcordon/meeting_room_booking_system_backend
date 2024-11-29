@@ -1,0 +1,78 @@
+# 这是一个 Docker Compose 配置文件,用于定义和运行多个 Docker 容器
+# 使用版本3.8的语法
+version: '3.8'
+
+# services 用来定义要运行的容器服务
+services:
+  # 这是我们的主应用服务,一个 Nest.js 应用
+  nest-app:
+    # 指定如何构建这个服务的 Docker 镜像
+    # context: ./ 表示使用当前目录作为构建上下文
+    # dockerfile: ./Dockerfile 指定使用当前目录下的 Dockerfile 文件来构建
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile
+    # 声明这个服务依赖于其他哪些服务
+    # 表示需要先启动 mysql 和 redis 服务,再启动这个服务
+    depends_on:
+      - mysql-container
+      - redis-container
+    # 端口映射配置
+    # 将容器内的3005端口映射到主机的3005端口
+    # 这样我们就可以通过主机的3005端口访问应用
+    ports:
+      - 3005:3005
+    # 将这个服务连接到名为 common-network 的网络
+    # 这样可以和其他服务进行通信
+    networks:
+      - common-network
+    # restart: always
+
+  # MySQL 数据库服务配置
+  mysql-container:
+    # 使用官方的 MySQL 镜像
+    image: mysql
+    # 数据卷挂载
+    # 将主机上的 /Users/zengruilin/mysql_data 目录挂载到容器内的 /var/lib/mysql
+    # 这样 MySQL 的数据就会持久化保存在主机上
+    volumes:
+      - /Users/zengruilin/mysql_data:/var/lib/mysql
+    # 设置 MySQL 的环境变量
+    # 创建一个名为 meeting_room_booking_system 的数据库
+    # 设置 root 用户密码为 root
+    environment:
+      MYSQL_DATABASE: meeting_room_booking_system
+      MYSQL_ROOT_PASSWORD: root
+    # 连接到公共网络
+    networks:
+      - common-network
+    # restart: always
+    ports:
+      - "3306:3306"
+
+  # Redis 缓存服务配置
+  redis-container:
+    # 使用官方的 Redis 镜像
+    image: redis
+    # 指定 Redis 的启动命令 Redis 容器添加了 --bind 0.0.0.0 允许所有网络接口的连接
+    command: redis-server --bind 0.0.0.0
+    # 数据卷挂载
+    # 将主机上的 /Users/zengruilin/redis_data 目录挂载到容器内的 /data
+    # 这样 Redis 的数据就会持久化保存在主机上
+    volumes:
+      - /Users/zengruilin/redis_data:/data
+    # 连接到公共网络
+    networks:
+      - common-network
+    # restart: always
+    ports:
+      - "6379:6379"
+
+# 定义 Docker 网络配置
+networks:
+  # 创建一个名为 common-network 的网络
+  common-network:
+    # 使用 bridge 驱动
+    # bridge 网络是 Docker 默认的网络驱动程序
+    # 它允许容器之间通过网络名称相互通信
+    driver: bridge

@@ -20,9 +20,9 @@ import { ConfigService } from '@nestjs/config';
         })
 
         // 监听错误事件
-        client.on('error', (err) => {
-          console.error('Redis 客户端连接错误:', err);
-        });
+        // client.once('error', (err) => {
+        //   console.error('Redis 客户端连接错误:', err);
+        // });
 
         try {
           await client.connect(); // 尝试连接到 Redis 服务器
