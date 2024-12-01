@@ -6,6 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "说明1": "如果你改了 Dockerfile 或者 docker-compose.yml 想重新跑的话，需要先把之前的镜像和容器删掉再跑：",
+    "删除镜像和容器": "docker-compose down --rmi all",
+    "说明2": "然后重新编译镜像和启动容器：",
+    "编译镜像和启动容器": "docker-compose up -d",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
