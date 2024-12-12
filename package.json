@@ -10,6 +10,7 @@
     "删除镜像和容器": "docker-compose down --rmi all",
     "说明2": "然后重新编译镜像和启动容器：",
     "编译镜像和启动容器": "docker-compose up -d",
+    "docker": "pnpm 删除镜像和容器 && pnpm 编译镜像和启动容器",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
