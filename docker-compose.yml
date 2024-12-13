@@ -4,6 +4,15 @@ version: '3.8'
 
 # services 用来定义要运行的容器服务
 services:
+  fe-app:
+    # image: fe-container:first # 本地镜像
+    image: crpi-hv3jm6wlhtdh2ipn.cn-guangzhou.personal.cr.aliyuncs.com/zeng_zeng/lin:aaa # 阿里云镜像 https://cr.console.aliyun.com/repository/cn-guangzhou/zeng_zeng/lin/details
+    ports:
+      - 80:80
+    depends_on:
+      - nest-app
+    networks:
+      - common-network
   # 这是我们的主应用服务,一个 Nest.js 应用
   nest-app:
     # 指定如何构建这个服务的 Docker 镜像
