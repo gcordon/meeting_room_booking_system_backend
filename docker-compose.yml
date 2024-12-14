@@ -55,8 +55,8 @@ services:
       # 添加以下环境变量来允许任何主机连接
       MYSQL_ROOT_HOST: '%'
       # 添加以下环境变量
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: root
       # 添加命令来修改MySQL配置
     # # command: --authentication-plugin=mysql_native_password
     # 连接到公共网络
