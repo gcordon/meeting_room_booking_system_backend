@@ -70,8 +70,9 @@ import * as path from 'path';
     // 全局 env 环境变量
     ConfigModule.forRoot({ // https://docs.nestjs.com/techniques/configuration
       isGlobal: true, // 全局环境变量
-      // envFilePath: 'src/.env', // 环境变量文件路径
-      envFilePath: path.join(__dirname, '.env'), // 因为 build 出来的代码没有 src 目录，是直接放在 dist 下的
+      envFilePath: process.env.NODE_ENV === 'production' 
+        ? path.join(__dirname, '.env')  // 生产环境使用 dist 目录下的 .env
+        : 'src/.env', // 开发环境使用 src 目录下的 .env
     }),
     // 用户模块
     UserModule,
