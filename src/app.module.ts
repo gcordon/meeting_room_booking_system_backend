@@ -49,7 +49,7 @@ import * as path from 'path';
           username: configService.get('mysql_server_username'), // 数据库用户名
           password: configService.get('mysql_server_password'), // 数据库密码
           database: configService.get('mysql_server_database'), // 数据库名称
-          synchronize: true, // 自动同步实体
+          synchronize: false, // 自动同步实体
           logging: true, // 启用日志记录
           entities: [ // 实体列表
             UserEntity, // 用户实体

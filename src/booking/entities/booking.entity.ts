@@ -1,6 +1,8 @@
 
-import { UserEntity } from "src/entities/user.entity";
-import { MeetingRoomEntity } from "src/meeting-room/entities/meeting-room.entity";
+// import { UserEntity } from "src/entities/user.entity";
+// import { MeetingRoomEntity } from "src/meeting-room/entities/meeting-room.entity";
+import { UserEntity } from "../../entities/user.entity";
+import { MeetingRoomEntity } from "../../meeting-room/entities/meeting-room.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('booking')

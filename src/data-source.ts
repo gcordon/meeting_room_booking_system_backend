@@ -3,9 +3,9 @@ import { DataSource } from "typeorm";
 import { config } from 'dotenv';
 
 // 导入实体类
-import { PermissionEntity } from './entities/permission.entity';
-import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
+import { RoleEntity } from './entities/role.entity';
+import { PermissionEntity } from './entities/permission.entity';
 import { MeetingRoomEntity } from './meeting-room/entities/meeting-room.entity';
 import { BookingEntity } from './booking/entities/booking.entity';
 
