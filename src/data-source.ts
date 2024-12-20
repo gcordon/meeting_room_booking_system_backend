@@ -13,7 +13,7 @@ import { BookingEntity } from './booking/entities/booking.entity';
 config({ path: './src/.env-migration' });
 
 // 打印环境变量,用于调试
-console.log(process.env);
+// console.log(process.env);
 
 // 导出 TypeORM 数据源配置
 export default new DataSource({
